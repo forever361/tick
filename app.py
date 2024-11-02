@@ -5,11 +5,11 @@ app = Flask(__name__)
 # 模拟数据
 projects = {
     '英语': {
-        'dates': ['2024-11-01', '2024-11-02', '2024-11-03', '2024-11-04', '2024-11-05'],
+        'jobs': ['1', '2', '3', '4', '5','6','7','8','9','10','11','12'],
         'completed_dates': []
     },
     '健身': {
-        'dates': ['2024-11-01', '2024-11-02', '2024-11-03', '2024-11-04', '2024-11-05'],
+        'jobs': ['1', '2', '3', '4', '5','6','7','8','9','10'],
         'completed_dates': []
     }
 }
@@ -25,7 +25,7 @@ def update():
     date = request.form['date']
     project_name = request.form['project_name']
 
-    if date in projects[project_name]['dates'] and date not in projects[project_name]['completed_dates']:
+    if date in projects[project_name]['jobs'] and date not in projects[project_name]['completed_dates']:
         projects[project_name]['completed_dates'].append(date)
 
     return redirect(url_for('index'))
