@@ -2,17 +2,21 @@
     "英语": {
         "jobs": {
             "任务2": {
-                "detail": "任务2的详细信息"
-            },
-            "sgs": {
-                "name": "sgs",
                 "detail": "sdg"
             },
-            "112": {
-                "detail": "ery123dsfg"
+            "2345": {
+                "detail": "5艾师傅"
+            },
+            "111发发1212": {
+                "detail": "11但是故事"
+            },
+            "11111": {
+                "detail": "232323"
             }
         },
-        "completed_dates": []
+        "completed_dates": [
+            "任务2"
+        ]
     },
     "健身": {
         "jobs": {
@@ -21,6 +25,9 @@
             },
             "任务777": {
                 "detail": "hahah777"
+            },
+            "任务4": {
+                "detail": "436哥SGT是123"
             }
         },
         "completed_dates": []

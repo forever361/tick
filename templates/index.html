@@ -46,6 +46,17 @@
             text-overflow: ellipsis;
             vertical-align: middle;
         }
+
+        .job-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .job-container .ms-auto {
+            margin-left: auto;
+            text-align: right;
+        }
+
     </style>
 </head>
 <body>
@@ -69,7 +80,7 @@
             <!-- 横向排列的 jobs -->
             <div class="d-flex flex-row overflow-auto job-list">
                 {% for date in data.jobs %}
-                <div class="job-container p-2 border border-secondary rounded me-2">
+                <div class="job-container p-2 border border-secondary rounded me-2 d-flex align-items-center">
                     <form action="{{ url_for('update') }}" method="post" style="display: inline-block;">
                         <input type="hidden" name="date" value="{{ date }}">
                         <input type="hidden" name="project_name" value="{{ project_name }}">
@@ -78,16 +89,18 @@
                                    {% if date in data.completed_dates %}checked{% endif %}>
                             <span class="job-name">{{ date }}</span> <!-- job名称截断显示 -->
                         </label>
-                        <!-- 更新图标 -->
+                        <!-- 更新按钮在 form 内 -->
                         <button type="submit" class="btn btn-sm btn-link p-0">
                             <i class="fas fa-sync-alt text-primary"></i>
                         </button>
                     </form>
-                    <!-- 点击这里打开模态框 -->
-                    <button class="btn btn-sm btn-link p-0 edit-job" data-date="{{ date }}"
-                            data-project="{{ project_name }}">
-                        <i class="fas fa-ellipsis-v text-secondary"></i>
-                    </button>
+                    <!-- 编辑图标放在 form 外 -->
+                    <div class="ms-auto">
+                        <button class="btn btn-sm btn-link p-0 edit-job" data-project="{{ project_name }}"
+                                data-date="{{ date }}">
+                            <i class="fas fa-ellipsis-v text-secondary"></i>
+                        </button>
+                    </div>
 
                 </div>
                 {% endfor %}
@@ -134,7 +147,6 @@
         </div>
     </div>
 </div>
-
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -192,79 +204,79 @@
 </script>
 
 <script>
- $(document).ready(function() {
-    // 点击三个点打开模态框
-    $('.edit-job').on('click', function() {
-        var jobDate = $(this).data('date');
-        var projectName = $(this).data('project');
+    $(document).ready(function () {
+        // 点击三个点打开模态框
+        $('.edit-job').on('click', function () {
+            var jobDate = $(this).data('date');
+            var projectName = $(this).data('project');
 
-        // 获取当前任务的详细信息
-        $.ajax({
-            type: 'GET',
-            url: '/get-job-detail',
-            data: { project_name: projectName, date: jobDate },
-            success: function(data) {
-                $('#jobName').val(data.job_name);
-                $('#jobDetail').val(data.job_detail);
-                $('#jobDate').val(jobDate);
-                $('#projectName').val(projectName);
-
-                $('#editJobModal').modal('show');
-            },
-            error: function() {
-                alert('获取任务详情失败。');
-            }
-        });
-    });
-
-    // 保存按钮点击事件
-    $('#saveChanges').on('click', function() {
-        var jobName = $('#jobName').val();
-        var jobDetail = $('#jobDetail').val();
-        var jobDate = $('#jobDate').val();
-        var projectName = $('#projectName').val();
-
-        $.ajax({
-            type: 'POST',
-            url: '/update-job',
-            data: {
-                project_name: projectName,
-                date: jobDate,
-                job_name: jobName,
-                job_detail: jobDetail
-            },
-            success: function(response) {
-                $(`.job-form[data-date='${jobDate}'] .job-name`).text(jobName);
-                $('#editJobModal').modal('hide');
-                 location.reload();  // 保存成功后刷新页面
-            },
-            error: function() {
-                alert('更新失败，请重试。');
-            }
-        });
-    });
-
-    // 删除按钮点击事件
-    $('#deleteJob').on('click', function() {
-        var jobDate = $('#jobDate').val();
-        var projectName = $('#projectName').val();
-
-        if (confirm('确认删除该任务吗？')) {
+            // 获取当前任务的详细信息
             $.ajax({
-                type: 'POST',
-                url: '/delete_job',
-                data: { project_name: projectName, job_name: jobDate },
-                success: function(response) {
-                    $('#editJobModal').modal('hide');
-                    location.reload();  // 刷新页面以移除已删除的任务
+                type: 'GET',
+                url: '/get-job-detail',
+                data: {project_name: projectName, date: jobDate},
+                success: function (data) {
+                    $('#jobName').val(data.job_name);
+                    $('#jobDetail').val(data.job_detail);
+                    $('#jobDate').val(jobDate);
+                    $('#projectName').val(projectName);
+
+                    $('#editJobModal').modal('show');
                 },
-                error: function() {
-                    alert('删除任务失败，请重试。');
+                error: function () {
+                    alert('获取任务详情失败。');
                 }
             });
-        }
+        });
+
+        // 保存按钮点击事件
+        $('#saveChanges').on('click', function () {
+            var jobName = $('#jobName').val();
+            var jobDetail = $('#jobDetail').val();
+            var jobDate = $('#jobDate').val();
+            var projectName = $('#projectName').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/update-job',
+                data: {
+                    project_name: projectName,
+                    date: jobDate,
+                    job_name: jobName,
+                    job_detail: jobDetail
+                },
+                success: function (response) {
+                    $(`.job-form[data-date='${jobDate}'] .job-name`).text(jobName);
+                    $('#editJobModal').modal('hide');
+                    location.reload();  // 保存成功后刷新页面
+                },
+                error: function () {
+                    alert('更新失败，请重试。');
+                }
+            });
+        });
+
+        // 删除按钮点击事件
+        $('#deleteJob').on('click', function () {
+            var jobDate = $('#jobDate').val();
+            var projectName = $('#projectName').val();
+
+            if (confirm('确认删除该任务吗？')) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/delete_job',
+                    data: {project_name: projectName, job_name: jobDate},
+                    success: function (response) {
+                        $('#editJobModal').modal('hide');
+                        location.reload();  // 刷新页面以移除已删除的任务
+                    },
+                    error: function () {
+                        alert('删除任务失败，请重试。');
+                    }
+                });
+            }
+        });
     });
-});
 
 
 </script>

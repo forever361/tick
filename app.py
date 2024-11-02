@@ -5,15 +5,23 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 app = Flask(__name__)
 
-# 读取 JSON 文件
 def load_jobs_data():
     if os.path.exists('jobs.json'):
         with open('jobs.json', 'r', encoding='utf-8') as f:
-            return json.load(f)
+            data = json.load(f)
+            # 移除所有 job 的 name 属性
+            for project in data.values():
+                for job in project['jobs'].values():
+                    job.pop("name", None)
+            return data
     return {}
 
-# 保存 JSON 文件
+
 def save_jobs_data(data):
+    # 确保保存数据时也没有 name 字段
+    for project in data.values():
+        for job in project['jobs'].values():
+            job.pop("name", None)
     with open('jobs.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
@@ -54,7 +62,6 @@ def add_job():
         # 如果项目中不存在该任务名称，则添加新任务
         if job_name not in projects[project_name]['jobs']:
             projects[project_name]['jobs'][job_name] = {
-                "name": job_name,
                 "detail": job_detail
             }
             save_jobs_data(projects)
@@ -84,6 +91,7 @@ def update_job():
     job_detail = request.form['job_detail']
 
     if project_name in projects and old_job_name in projects[project_name]['jobs']:
+        # 更新任务名和详情
         projects[project_name]['jobs'].pop(old_job_name)
         projects[project_name]['jobs'][new_job_name] = {
             'detail': job_detail
@@ -91,6 +99,7 @@ def update_job():
         save_jobs_data(projects)
 
     return '', 204  # 返回204表示无内容响应
+
 
 
 
@@ -107,6 +116,7 @@ def get_job_detail():
         }
     else:
         return {'error': '任务不存在'}, 404
+
 
 
 if __name__ == '__main__':
