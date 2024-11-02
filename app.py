@@ -117,6 +117,24 @@ def get_job_detail():
     else:
         return {'error': '任务不存在'}, 404
 
+@app.route('/add_project', methods=['POST'])
+def add_project():
+    project_name = request.form['project_name']
+    project_description = request.form['project_description']
+
+    # 检查项目是否已存在
+    if project_name in projects:
+        return jsonify({'status': 'error', 'message': '项目已存在'}), 400
+
+    # 添加新项目
+    projects[project_name] = {
+        'jobs': {},
+        'completed_dates': [],
+        'description': project_description  # 可选：存储描述
+    }
+    save_jobs_data(projects)
+
+    return jsonify({'status': 'success'}), 200
 
 
 if __name__ == '__main__':

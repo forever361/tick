@@ -12,11 +12,26 @@
             },
             "11111": {
                 "detail": "232323"
+            },
+            "123123": {
+                "detail": "123123"
+            },
+            "124": {
+                "detail": "7777"
+            },
+            "sfsafa": {
+                "detail": "asfsaf"
+            },
+            "4363": {
+                "detail": "374347"
             }
         },
         "completed_dates": [
-            "任务2"
-        ]
+            "任务2",
+            "2345",
+            "111发发1212"
+        ],
+        "description": "234"
     },
     "健身": {
         "jobs": {
@@ -30,6 +45,9 @@
                 "detail": "436哥SGT是123"
             }
         },
-        "completed_dates": []
+        "completed_dates": [
+            "任务B1234"
+        ],
+        "description": "123"
     }
 }
