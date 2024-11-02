@@ -1,18 +1,25 @@
+import json
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 app = Flask(__name__)
 
-# 模拟数据
-projects = {
-    '英语': {
-        'jobs': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-        'completed_dates': []
-    },
-    '健身': {
-        'jobs': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-        'completed_dates': []
-    }
-}
+# 读取 JSON 文件
+def load_jobs_data():
+    if os.path.exists('jobs.json'):
+        with open('jobs.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+# 保存 JSON 文件
+def save_jobs_data(data):
+    with open('jobs.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+# 加载项目数据
+projects = load_jobs_data()
+
 
 
 @app.route('/')
@@ -30,6 +37,9 @@ def update():
         projects[project_name]['completed_dates'].remove(date)  # 取消勾选
     else:
         projects[project_name]['completed_dates'].append(date)  # 勾选
+
+    # 保存更新后的数据
+    save_jobs_data(projects)
 
     return redirect(url_for('index'))
 

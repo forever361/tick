@@ -24,10 +24,23 @@
         flex: 0 1 100px; /* 固定按钮宽度 */
     }
 
+       /* job 容器的外层容器 */
+    .job-list {
+        display: flex;
+        flex-wrap: nowrap;  /* 保持不换行 */
+        overflow-x: auto;   /* 水平方向滚动条 */
+    }
+
+    /* 每个 job 的固定宽度 */
+    .job-container {
+        width: 160px; /* 固定宽度，调整到合适大小 */
+        flex: 0 0 auto; /* 防止被挤压 */
+    }
+
      /* 限制 job 名称的宽度并显示省略号 */
     .job-name {
         display: inline-block;
-        max-width: 20px; /* 设置显示宽度，根据需求调整 */
+        max-width: 50px; /* 设置显示宽度，根据需求调整 */
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -53,9 +66,9 @@
             </div>
 
             <!-- 横向排列的 jobs -->
-            <div class="d-flex flex-row overflow-auto">
+            <div class="d-flex flex-row overflow-auto job-list">
                 {% for date in data.jobs %}
-                <div class="p-2 border border-secondary rounded me-2">
+                <div class="job-container p-2 border border-secondary rounded me-2">
                     <form action="{{ url_for('update') }}" method="post" style="display: inline;">
                         <input type="hidden" name="date" value="{{ date }}">
                         <input type="hidden" name="project_name" value="{{ project_name }}">
@@ -93,6 +106,10 @@
 
 <script>
     $(document).ready(function() {
+
+         // 滚动条默认滑动到最右边
+        $('.job-list').scrollLeft($('.job-list')[0].scrollWidth);
+
         // 初始化进度条上的百分比文本
         $('.progress-bar').each(function() {
             var percent = $(this).attr('aria-valuenow');
