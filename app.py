@@ -47,19 +47,66 @@ def update():
 @app.route('/add_job', methods=['POST'])
 def add_job():
     project_name = request.form['project_name']
-    job = request.form['job']
-    if project_name in projects and job not in projects[project_name]['jobs']:
-        projects[project_name]['jobs'].append(job)
-    return jsonify({'status': 'success', 'jobs': projects[project_name]['jobs']})
+    job_name = request.form['job_name']
+    job_detail = request.form['job_detail']
 
+    if project_name in projects:
+        # 如果项目中不存在该任务名称，则添加新任务
+        if job_name not in projects[project_name]['jobs']:
+            projects[project_name]['jobs'][job_name] = {
+                "name": job_name,
+                "detail": job_detail
+            }
+            save_jobs_data(projects)
+            return jsonify({'status': 'success', 'jobs': projects[project_name]['jobs']})
+        else:
+            return jsonify({'status': 'error', 'message': '任务已存在'}), 400
+    return jsonify({'status': 'error', 'message': '项目不存在'}), 404
 
 @app.route('/delete_job', methods=['POST'])
 def delete_job():
     project_name = request.form['project_name']
-    job = request.form['job']
-    if project_name in projects and job in projects[project_name]['jobs']:
-        projects[project_name]['jobs'].remove(job)
-    return jsonify({'status': 'success', 'jobs': projects[project_name]['jobs']})
+    job_name = request.form['job_name']
+
+    if project_name in projects and job_name in projects[project_name]['jobs']:
+        # 删除任务
+        del projects[project_name]['jobs'][job_name]
+        save_jobs_data(projects)
+        return jsonify({'status': 'success'})
+    return jsonify({'status': 'error', 'message': '任务不存在或项目无效'}), 404
+
+
+@app.route('/update-job', methods=['POST'])
+def update_job():
+    project_name = request.form['project_name']
+    old_job_name = request.form['date']
+    new_job_name = request.form['job_name']
+    job_detail = request.form['job_detail']
+
+    if project_name in projects and old_job_name in projects[project_name]['jobs']:
+        projects[project_name]['jobs'].pop(old_job_name)
+        projects[project_name]['jobs'][new_job_name] = {
+            'detail': job_detail
+        }
+        save_jobs_data(projects)
+
+    return '', 204  # 返回204表示无内容响应
+
+
+
+@app.route('/get-job-detail', methods=['GET'])
+def get_job_detail():
+    project_name = request.args.get('project_name')
+    date = request.args.get('date')
+
+    if project_name in projects and date in projects[project_name]['jobs']:
+        job = projects[project_name]['jobs'][date]
+        return {
+            'job_name': date,
+            'job_detail': job['detail']
+        }
+    else:
+        return {'error': '任务不存在'}, 404
 
 
 if __name__ == '__main__':
