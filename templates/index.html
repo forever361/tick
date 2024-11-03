@@ -46,7 +46,7 @@
         /* 限制 job 名称的宽度并显示省略号 */
         .job-name {
             display: inline-block;
-            max-width: 50px; /* 设置显示宽度，根据需求调整 */
+            max-width: 120px; /* 设置显示宽度，根据需求调整 */
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -79,18 +79,18 @@
             <!-- 进度条 -->
             <div class="progress mb-3">
                 <div class="progress-bar" role="progressbar"
-                     style="width: {% if data.jobs|length > 0 %}{{ (data.completed_dates|length / data.jobs|length) * 100 }}{% else %}0{% endif %}%;"
-                     aria-valuenow="{% if data.jobs|length > 0 %}{{ (data.completed_dates|length / data.jobs|length) * 100 }}{% else %}0{% endif %}"
+                     style="width: {% if data.jobs|length > 0 %}{{ '%.2f' | format((data.completed_dates|length / data.jobs|length) * 100) }}{% else %}0{% endif %}%;"
+                     aria-valuenow="{% if data.jobs|length > 0 %}{{ '%.2f' | format((data.completed_dates|length / data.jobs|length) * 100) }}{% else %}0{% endif %}"
                      aria-valuemin="0"
                      aria-valuemax="100">
                     {% if data.jobs|length > 0 %}
-                    {{ (data.completed_dates|length / data.jobs|length) * 100 }}%
+                    {{ '%.2f' | format((data.completed_dates|length / data.jobs|length) * 100) }}%
                     {% else %}
-                    0%
+                    0.00%
                     {% endif %}
                 </div>
-
             </div>
+
 
             <!-- 横向排列的 jobs -->
             <div class="d-flex flex-row overflow-auto job-list">
@@ -218,8 +218,8 @@
 
         // 初始化进度条上的百分比文本
         $('.progress-bar').each(function () {
-            var percent = $(this).attr('aria-valuenow');
-            $(this).text(Math.round(percent) + '%');
+            var percent = parseFloat($(this).attr('aria-valuenow')).toFixed(2);
+            $(this).text(percent + '%');
         });
 
         // 添加新的 job
