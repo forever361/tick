@@ -219,15 +219,15 @@
             }
         },
         "completed_dates": [],
-        "description": "234"
+        "description": "新概念第一册：总目标72课"
     },
     "健身": {
         "jobs": {
-            "任务B1234": {
-                "detail": "123"
+            "俯卧撑 10": {
+                "detail": "俯卧撑：总目标需要200"
             }
         },
         "completed_dates": [],
-        "description": "123"
+        "description": "俯卧撑：总目标需要200"
     }
 }
