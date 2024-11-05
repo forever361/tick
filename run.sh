@@ -1,0 +1,1 @@
+nohup /app/tanos/application/anaconda3/envs/env1/bin/gunicorn --preload -w 4 -b 0.0.0.0:5555 --access-logfile access.log --error-logfile error.log  app:app
